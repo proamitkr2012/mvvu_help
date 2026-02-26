@@ -142,7 +142,7 @@ namespace MVVU_HELP_UI.Areas.Admin.Controllers
                         var ext = filename.Substring(filename.LastIndexOf('.'));
                         string time = DateTime.Now.ToString("yyyyMMddHHmmss");
                         string myfile = time+j.ToString() + ext;
-                        var path = "D:/DOCUMENTS/HELPDESK_FILE/";
+                        var path = "D:/DOCUMENTS/MVVU_HELPDESK_FILE/";
                         FullPath = path + myfile;
                         var uploads = Path.Combine(path);
 
