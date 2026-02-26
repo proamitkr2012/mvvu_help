@@ -1,0 +1,137 @@
+﻿@model MVVU_Model.DTO.AdminMasterDTO
+@{
+    ViewData["Title"] = "New";
+}
+
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                @* <div class="col-sm-6">
+                <h1 class="card-title">Choose Collage </h1>
+                </div>*@<!-- /.col -->
+
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <div class="content-body">
+        <!-- row -->
+        <div class="container-fluid">
+
+            <div class="row">
+
+                <div class="col-xl-12 justify-content-between align-items-center">
+
+
+                    <div class="card card-primary">
+                        <div class="card-header">
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body" style="width: 100%">
+                            <form method="post">
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <h2>Edit Details</h2>
+
+
+                                        <div class="mb-1 ">
+                                            <label class="form-label">Display Name</label>
+                                            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+
+
+                                        </div>
+                                        <div class="mb-1 ">
+                                            <label class="form-label">Real Name</label>
+                                            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+
+
+                                        </div>
+                                        <div class="mb-1 ">
+                                            <label class="form-label">Email</label>
+                                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", })
+
+
+                                        </div>
+                                        <div class="mb-1 ">
+                                            <label class="form-label">Mobile</label>
+                                            @Html.TextBoxFor(m => m.MobileNo, new { @class = "form-control", @maxlength = "10" })
+
+
+                                        </div>
+                                        @if (CurrentUser.Roles.Contains("Admin") || CurrentUser.Roles.Contains("SuperAdmin"))
+                                        {
+                                            <div class="mb-1 ">
+                                                <label class="form-label">Password</label>
+                                                @Html.TextBoxFor(m => m.Password, new { @class = "form-control" })
+                                            </div>
+
+                                            <div class="mb-1 ">
+                                                <label class="form-label">Roles</label>
+
+                                                @Html.DropDownList("Roles", Model.RoleMaster, new { multiple = "multiple", name = "RoleMasterId", @class = "chosen-select form-control select2 ", data_placeholder = " " })
+                                            </div>
+                                        }
+                                       
+                                        <div class="mb-1 ">
+                                            <label class="form-label">Working Areas</label>
+
+                                            @Html.DropDownList("CtypeListChoose", Model.CtMaster, new { multiple = "multiple", name = "RoleMasterId", @class = "chosen-select form-control select2 ", data_placeholder = " " })
+                                        </div>
+                                        @*  <div class="mb-1 ">
+                                        <label class="form-label">WorkingArea</label>
+                                        @Html.TextBoxFor(m => m.WorkingArea, new { @class = "form-control", @placeholder = "Roles" })
+
+
+                                        </div> *@
+                                        @* <div class="mb-1 ">
+                                        <label class="form-label">Category</label>
+
+                                        <select class="form-control" style="width: 100%" id="CategoryID" name="CategoryID">
+                                        <option value="">Select Category </option>
+                                        @if (Model.CategoryList.Count() > 0)
+                                        {
+                                        foreach (var item in Model.CategoryList)
+                                        {
+                                        if (item.CategoryID == Model.CategoryID)
+                                        {
+                                        <option value="@item.CategoryID" selected>@item.CategoryName </option>
+                                        }
+                                        else
+                                        {
+                                        <option value="@item.CategoryID">@item.CategoryName </option>
+                                        }
+
+                                        }
+                                        }
+
+                                        </select>
+
+                                        </div> *@
+
+
+                                    </div>
+                                    <!-- /.row -->
+
+                                </div>
+                                <div class="col-md-6 text-center">
+                                    <button type="submit" id="btng" class="btn btn-primary w-100">Submit</button>
+                                    <button class="btn btn-primary btn-block w-100" style="display:none" id="btnwaitg">
+                                        <i class="fa fa-spinner fa-spin" aria-hidden="true"></i> Submit
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- /.card-body -->
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

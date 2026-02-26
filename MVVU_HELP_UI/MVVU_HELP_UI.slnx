@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="../MVVU_Data/MVVU_Data.csproj" Id="3b66eeac-6b3d-4efd-b785-519378d1da91" />
+  <Project Path="../MVVU_Model/MVVU_Model.csproj" Id="8a0ab1fa-a7db-4c2f-baf6-8b0187e9e81b" />
+  <Project Path="../MVVU_Repo/MVVU_Repo.csproj" Id="294df1ca-2e9b-4467-a6b1-55f5fa583717" />
+  <Project Path="../SMS_MAILAPP/SMS_MAILAPP.csproj" Id="c3e9634c-0967-4e1e-92d6-0cbfef0e94b8" />
+  <Project Path="MVVU_HELP_UI.csproj" />
+</Solution>

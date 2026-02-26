@@ -1,0 +1,517 @@
+﻿@model MVVU_Model.DTO.HelpDesk.TblHelpDeskDTO_AM
+@{
+    ViewData["Title"] = "New";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+<link rel="stylesheet" type="text/css" href="~/trix/trix.css">
+<script type="text/javascript" src="~/trix/trix.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<style>
+    .fontgap {
+        letter-spacing: 1px;
+    }
+
+    .btn-lg {
+        font-size: 1rem;
+    }
+
+    @@media (max-width: 990px) {
+
+        .fontgap .btn {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+    }
+
+    input[type=radio] {
+        border: 0px;
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .bg {
+        /* The image used */
+        background-image: url("/dbru.jpeg");
+        /* Full height */
+        width: 100%;
+        /* Center and scale the image nicely */
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    canvas {
+        height: 50px !important;
+    }
+
+    .form-group {
+        margin-bottom: 2px;
+    }
+
+    trix-editor {
+        background-color: white;
+    }
+
+    .trix-button-group--history-tools,
+    .trix-button--icon-undo,
+    .trix-button--icon-redo {
+        display: none;
+        border: none;
+    }
+
+    .trix-button-group.trix-button-group--file-tools {
+        display: none;
+        border: none;
+    }
+
+    .trix-button--icon-code {
+        display: none;
+        border: none;
+    }
+
+    div.scroll {
+        padding: 20px;
+        background: linear-gradient(109.6deg, rgb(36, 45, 57) 11.2%, rgb(16, 37, 60) 51.2%, rgb(0, 0, 0) 98.6%);
+        /* background-color: #000; */
+        height: 600px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        /* background-image: url("/bakwhatapp.png"); */
+        /* white-space: nowrap; */
+    }
+
+    .chatL {
+        /* background-color: #d4edda; */
+        background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+        margin-bottom: 5px;
+        border-radius: 30px;
+    }
+
+    .chatR {
+        border-radius: 30px;
+        /*      background-color: #f8d7da; */
+        background-image: linear-gradient(60deg, #abecd6 0%, #fbed96 100%);
+        margin-bottom: 5px;
+    }
+
+    .chatc {
+        border-radius: 5px;
+        /*     background-color: #d4edda; */
+        margin-bottom: 5px;
+        background-image: linear-gradient(to top, #feada6 0%, #f5efef 100%);
+    }
+</style>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                @* <div class="col-sm-6">
+                <h1 class="card-title">Choose Collage </h1>
+                </div>*@<!-- /.col -->
+
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <div class="content-body">
+        <!-- row -->
+        <div class="container-fluid">
+
+            <div class="row">
+
+                <div class="col-xl-12">
+
+                    @*//////////////////////*@
+                    @if (Model.HelpDesk != null)
+                    {
+                        <div class="card">
+                            <div class="card-header " style="background-color:@Model.FlagTypeList.Where(x=>x.FID==Model.HelpDesk.FlagTypeID).Select(x=>x.Color).FirstOrDefault()">
+                                <h1 class="card-title "><i class="fa fa-flag" aria-hidden="true"></i> Ticket:- <b>#@Model.HelpDesk.TicketID</b> / HelpDeskID- @Model.HelpDesk.HelpID</h1>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
+
+                                <div class="col-xs-12 col-sm-12 col-md-12 p-0">
+                                    <div class="inbox-avatar p-20 border-btm">
+
+                                        <div class="inbox-avatar-text">
+
+                                            <h5> <strong>Subject: </strong><span class="text-danger">@Model.HelpDesk.Subject</span></h5>
+                                            <div tyle="float:right">
+                                                <strong>
+                                                    Posted on:
+                                                </strong>
+                                                @Model.HelpDesk.CreatedDate.Value.ToString("dd-MMM-yyyy HH:mm:ss tt")
+                                            </div>
+                                            <div class="avatar-name">
+                                                <strong>From: </strong>
+                                                @Model.HelpDesk.Name - <em>@Model.HelpDesk.Email</em>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class=" p-20 ">
+                                        <div class="scroll m-3">
+                                            @foreach (var item in Model.HelpDeskRemarks)
+                                            {
+                                                <div class="container">
+                                                    <div class="row">
+                                                        @if (string.IsNullOrEmpty(item.UpdatedbyName))
+                                                        {
+                                                            <div class="col-10 col-sm-10">
+                                                                <div class="p-3 ">
+                                                                    <div class=" p-4 chatL">
+                                                                        <div class="d-flex">
+                                                                            <div>
+                                                                                <i class="fa fa-arrow-circle-right"></i> @item.TypeName
+                                                                            </div>
+                                                                            <div class="ml-auto">
+                                                                                @item.CreatedDateDisplay
+                                                                                @{
+                                                                                    var n = string.IsNullOrEmpty(item.UpdatedbyName) ? "(You)" : "(" + item.UpdatedbyName + ")";
+                                                                                }
+                                                                                @n
+                                                                            </div>
+                                                                        </div>
+                                                                        <hr>
+                                                                        @Html.Raw(item.Remarks)
+
+                                                                        <hr style="clear:both">
+                                                                        <div style="display:block;clear:both">
+                                                                            <h6> <i class="fa fa-paperclip"></i> Attachments <span>(@Model.HelpDeskFiles.Where(x => x.RemarkID == item.EntryID).Count())</span> </h6>
+                                                                            <div class="">
+                                                                                @foreach (var d in @Model.HelpDeskFiles.Where(x => x.RemarkID == item.EntryID).ToList())
+                                                                                {
+                                                                                    <div class="px-5">  <i class="fa fa-paperclip"></i> <a href="@d.FilePath" alt="@d.Name" target="_blank">@d.Name</a> </div>
+                                                                                }
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-2 col-sm-2">
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            @if (item.ForwardCTypeID == 0)
+                                                            {
+                                                                <div class="col-2 col-sm-2">
+                                                                </div>
+                                                                <div class="col-10 col-sm-10">
+                                                                    <div class="p-3 ">
+                                                                        <div class=" p-4 chatR">
+                                                                            <div class="d-flex">
+                                                                                <div>
+                                                                                    <i class="fa fa-arrow-circle-right"></i> @item.TypeName
+                                                                                </div>
+                                                                                <div class="ml-auto">
+                                                                                    @item.CreatedDateDisplay
+                                                                                    @{
+                                                                                        var n1 = string.IsNullOrEmpty(item.UpdatedbyName) ? "(User)" : "(" + item.UpdatedbyName + ")";
+                                                                                    }
+                                                                                    @n1
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <hr>
+                                                                            @Html.Raw(item.Remarks)
+
+                                                                            <hr style="clear:both">
+                                                                            <div style="display:block;clear:both">
+                                                                                @if (Model.HelpDeskFiles.Where(x => x.RemarkID == item.EntryID).Count() > 0)
+                                                                                {
+                                                                                    <h6> <i class="fa fa-paperclip"></i> Attachments <span>(@Model.HelpDeskFiles.Where(x => x.RemarkID == item.EntryID).Count())</span> </h6>
+                                                                                    <div class="">
+                                                                                        @foreach (var d in @Model.HelpDeskFiles.Where(x => x.RemarkID == item.EntryID).ToList())
+                                                                                        {
+                                                                                            <div class="px-5">  <i class="fa fa-paperclip"></i> <a href="@d.FilePath" alt="@d.Name" target="_blank">@d.Name</a> </div>
+                                                                                        }
+
+
+                                                                                    </div>
+                                                                                }
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                            else
+                                                            {
+
+                                                                <div class="col-12 col-sm-12">
+                                                                    <div class="p-3 ">
+                                                                        <div class=" p-4 chatc">
+
+                                                                            <div class="text-center">
+                                                                                <i class="fa fa-arrow-circle-right"></i>
+                                                                                @Model.ComplaintTypeList.Where(x => x.CTypeID == item.ForwardCTypeID).Select(x => x.Details).FirstOrDefault()
+                                                                            </div>
+
+
+                                                                            <hr>
+                                                                            This case has been transfer to <b>@Model.ComplaintTypeList.Where(x => x.CTypeID == item.ForwardCTypeID).Select(x => x.Details).FirstOrDefault() </b>  section.
+                                                                            <br />
+                                                                            <b> Remarks:-</b>  @Html.Raw(item.Remarks)
+                                                                            <div class="d-flex">
+
+                                                                                <div class="ml-auto">
+                                                                                    @item.CreatedDateDisplay
+                                                                                    @{
+                                                                                        var n1 = string.IsNullOrEmpty(item.UpdatedbyName) ? "(User)" : "(" + item.UpdatedbyName + ")";
+                                                                                    }
+                                                                                    @n1
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        }
+
+                                                    </div>
+                                                </div>
+
+
+                                            }
+                                        </div>
+                                        <hr />
+                                        <div>
+
+                                            @using (Html.BeginForm("Tickets", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "help" }))
+                                            {
+                                                <input type="hidden" id="Ticket" name="Ticket" value="@Model.HelpDesk.TicketID" />
+                                                <label class="control-label" for="Message">Reply</label>
+                                                @*  <textarea placeholder="Message" required="" value="" name="Message" id="Message" class="form-control"></textarea> *@
+                                                <input id="Message" type="hidden" name="Message" required="required" class="input-field">
+                                                <trix-editor input="Message" placeholder="" required></trix-editor>
+
+
+                                                <div class="container">
+                                                    <div class="row">
+                                                        <div class="col-6 col-sm-4">
+                                                            <div class="form-group row m-2">
+                                                                <label class="col-sm-4">Ticket Status</label>
+                                                                <div class="col-sm-6">
+                                                                    <select id="Status" name="Status" class="form-select form-control" aria-label="Default select example">
+                                                                        @* <option selected value="Pending">Pending</option> *@
+                                                                        <option selected value="Open">Open</option>
+
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+
+
+                                                <div class="form-group">
+                                                    <label for="attachment">
+                                                        <a class="text-danger" role="button" aria-disabled="false">+ Add Documents (Upload Related Documents)</a>
+                                                    </label>
+                                                    <input type="file" name="file[]" accept=".pdf,.jpeg,.png" id="attachment" style="visibility: hidden; position: absolute;" multiple />
+                                                    <p id="files-area">
+                                                        <span id="filesList">
+                                                            <span id="files-names"></span>
+                                                        </span>
+                                                    </p>
+                                                </div>
+
+
+                                                <div class="text-center mt-4">
+                                                    <button class="btn btn-primary" type="button" onclick="Ticketsave()">Save</button>
+
+                                                    <a class="btn btn-warning" href="/">Back</a>
+
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function Ticketsave() {
+        flag = true;
+
+        if ($.trim($("#Message").val()) == "") {
+            $("trix-editor").addClass("input-validation-error");
+            flag = false;
+
+        }
+        else {
+            $("trix-editor").addClass("input-validation-error");
+        }
+
+        if (flag) {
+            $("#help").submit();
+        }
+
+    }
+
+
+    const dt = new DataTransfer(); // Permet de manipuler les fichiers de l'input file
+
+    $("#attachment").on('change', function (e) {
+        for (var i = 0; i < this.files.length; i++) {
+            let fileBloc = $('<span/>', { class: 'file-block' }),
+                fileName = $('<span/>', { class: 'name', text: this.files.item(i).name });
+            fileBloc.append('<span class="file-delete"><span>+</span></span>')
+                .append(fileName);
+            ///////////////////////////
+
+            var img = this.files.item(i).name;
+            var img_file_size = this.files.item(i).size;
+            if (img_file_size < 2097152) {
+                var img_ext = img.split('.').pop().toLowerCase();
+                if ($.inArray(img_ext, ['jpg', 'jpeg', 'pdf', 'png']) === -1) {
+
+                    alert("File (" + img + ") type not allowed.");
+                }
+                else {
+                    $("#filesList > #files-names").append(fileBloc);
+                }
+            }
+            else {
+
+                alert("File(" + img + ") size is too big.(Max 2MB)");
+            }
+
+            /////////////////////////////
+        };
+        // Ajout des fichiers dans l'objet DataTransfer
+        for (let file of this.files) {
+            dt.items.add(file);
+        }
+        // Mise à jour des fichiers de l'input file après ajout
+        this.files = dt.files;
+
+        // EventListener pour le bouton de suppression créé
+        $('span.file-delete').click(function () {
+            let name = $(this).next('span.name').text();
+            // Supprimer l'affichage du nom de fichier
+            $(this).parent().remove();
+            for (let i = 0; i < dt.items.length; i++) {
+                // Correspondance du fichier et du nom
+                if (name === dt.items[i].getAsFile().name) {
+                    // Suppression du fichier dans l'objet DataTransfer
+                    dt.items.remove(i);
+                    continue;
+                }
+            }
+            // Mise à jour des fichiers de l'input file après suppression
+            document.getElementById('attachment').files = dt.files;
+        });
+    });
+</script>
+<style>
+    #files-area {
+        /* width: 30%; */
+        margin: 0 auto;
+    }
+
+    .file-block {
+        border-radius: 10px;
+        background-color: rgba(144, 163, 203, 0.2);
+        margin: 5px;
+        color: initial;
+        display: inline-flex;
+        padding-right: 10px;
+        width: max-content;
+        display: inline-flex;
+    }
+
+        .file-block > span.name {
+            padding-right: 10px;
+            width: max-content;
+            display: inline-flex;
+        }
+
+    .file-delete {
+        display: flex;
+        width: 24px;
+        color: initial;
+        background-color: #6eb4ff00;
+        font-size: large;
+        justify-content: center;
+        margin-right: 3px;
+        cursor: pointer;
+    }
+
+        .file-delete:hover {
+            background-color: rgba(144, 163, 203, 0.2);
+            border-radius: 10px;
+        }
+
+        .file-delete span {
+            transform: rotate(45deg);
+        }
+
+
+
+    .glow {
+        animation: example 2s linear infinite;
+    }
+
+    @@keyframes example {
+        from {
+            color: white;
+        }
+
+        to {
+            color: #ccc;
+        }
+    }
+
+    .newsline {
+        font-family: sans-serif;
+        /*  margin: 100px auto;*/
+        color: #228B22;
+        text-align: center;
+        position: relative;
+    }
+
+        .newsline:before {
+            content: "";
+            display: block;
+            width: 30px;
+            height: 5px;
+            background: white;
+            left: 0;
+            top: 50%;
+            position: absolute;
+        }
+
+        .newsline:after {
+            content: "";
+            display: block;
+            width: 30px;
+            height: 5px;
+            background: white;
+            right: 0;
+            top: 50%;
+            position: absolute;
+        }
+
+    .select2-container .select2-selection--single {
+        height: 40px;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 40px;
+    }
+</style>

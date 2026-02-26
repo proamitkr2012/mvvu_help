@@ -1,0 +1,31 @@
+﻿@{
+    if (CurrentUser != null)
+    {
+        if (CurrentUser.Roles.Contains("Admin"))
+        {
+            Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+        }
+        
+        else if (CurrentUser.Roles.Contains("SuperAdmin"))
+        {
+            Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+        }
+        else if (CurrentUser.Roles.Contains("Operator"))
+        {
+            Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+        }
+        else if (CurrentUser.Roles.Contains("Department"))
+        {
+            Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+        }
+
+        else { 
+        Layout = "~/Areas/Admin/Views/Shared/_PublicLayout.cshtml";
+        }
+
+    }
+    else
+    {
+        Layout = "~/Areas/Admin/Views/Shared/_PublicLayout.cshtml";
+    }
+}

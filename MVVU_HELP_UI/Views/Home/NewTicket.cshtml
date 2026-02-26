@@ -1,0 +1,862 @@
+﻿@{
+    ViewData["Title"] = "New Ticket";
+    var admin = CurrentUser != null ?1:0;
+}
+<link rel="stylesheet" type="text/css" href="~/trix/trix.css">
+<script type="text/javascript" src="~/trix/trix.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<script src="~/js/jquery-captcha.js"></script>
+
+<style>
+    .fontgap {
+        letter-spacing: 1px;
+    }
+
+    .btn-lg {
+        font-size: 1rem;
+    }
+
+    @@media (max-width: 990px) {
+
+        .fontgap .btn {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+    }
+
+    input[type=radio] {
+        border: 0px;
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .bg {
+        /* The image used */
+        background-image: url("/dbru.jpeg");
+        /* Full height */
+        width: 100%;
+        /* Center and scale the image nicely */
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    canvas {
+        height: 100px !important;
+    }
+
+    .form-group {
+        margin-bottom: 2px;
+    }
+
+    trix-editor {
+        background-color: white;
+    }
+
+    .trix-button-group--history-tools,
+    .trix-button--icon-undo,
+    .trix-button--icon-redo {
+        display: none;
+        border: none;
+    }
+
+    .trix-button-group.trix-button-group--file-tools {
+        display: none;
+        border: none;
+    }
+
+
+    .drop_box {
+        margin: 10px 0;
+        padding: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        border: 3px dotted #a3a3a3;
+        border-radius: 5px;
+    }
+
+        .drop_box h4 {
+            font-size: 16px;
+            font-weight: 400;
+            color: #2e2e2e;
+        }
+
+        .drop_box p {
+            margin-top: 10px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: #a3a3a3;
+        }
+
+</style>
+
+<style>
+
+    .ldrpge {
+        position: absolute;
+        display: none;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.9);
+        z-index: 3;
+    }
+
+        .ldrpge img {
+            height: 50px;
+            position: absolute;
+            left: 50%;
+            top: 400px;
+            transform: translate(-50%, -50%);
+        }
+</style>
+<div class="">
+    <div class="col-md-12 alert-danger">
+        <marquee behavior="scroll" scrollamount="3" onmouseover="this.stop();" onmouseout="this.start();">
+            @* Admission form submission last date is 30 NOVEMBER, 2021 (प्रवेश फॉर्म जमा करने की अंतिम तिथि 30 नवम्बर 2021)*@
+        </marquee>
+    </div>
+    @*<div class="clearfix">&nbsp;</div>*@
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+<script src="~/js/jquery-captcha.js"></script>
+<div class="bg">
+    <div class="container ">
+        <div class="row p-2">
+
+            <div class="col-sm-8 offset-sm-2" style="min-height:400px">
+                @* <img src="~/dbru.jpeg" class="img-fluid" style="min-height:500px" />*@
+                <div class=" card">
+                    <h5 class="card-header bg-success text-white text-center"> New Ticket</h5>
+                    <div class="card-body ">
+                        @using (Html.BeginForm("NewTicket", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "help" }))
+                        {
+                            <div class="form-group">
+                                <label class="control-label" for="Message">Complaint Type<span class="text-danger">*</span></label>
+
+                                <select id="CTypeID" name="CTypeID" class="form-select form-control" onchange="ChangeForIgrs()">
+                                    <option value="">-- Select Complaint Type --</option>
+                                    @if (ViewBag.Typelist != null)
+                                    {
+                                        foreach (var item in ViewBag.Typelist)
+                                        {
+                                            if (CurrentUser == null && (item.TypeName == "IGRS" || item.TypeName == "TN-No"))
+                                            {
+
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.CTypeID">@item.TypeName</option>
+                                            }
+                                        }
+                                    }
+                                    @* <option value="0">Other</option> *@
+                                </select>
+                            </div>
+                            <div class="form-group igrshide">
+                                <label class="control-label" for="Subject"> Subject<span class="text-danger">*</span></label>
+                                <input type="text" placeholder="Complaint Subject..." required="" value="" name="Subject" id="Subject" class="form-control">
+                            </div>
+                            <div class="form-group duplhide">
+                                <label class="control-label" for="Subject"> Service Portal Application No.<span class="text-danger">*</span></label>
+                                <input type="number" placeholder="Service Portal Application No...." required="" value="" name="ApplicationNo" id="ApplicationNo" class="form-control">
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-sm-6">
+                                    <div class="form-group">
+                                        <label class="control-label" for="Enroll_Roll">
+
+
+                                            <span id="enroligrs">Roll/Enrollment</span>
+
+
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" placeholder="Roll/Enrollment" required="" maxlength="15" value="" name="Enroll_Roll" id="Enroll_Roll" class="form-control">
+
+                                    </div>
+                                </div>
+                                <input type="hidden" name="Roll" id="Roll">
+                                <div class="col-6 col-sm-6  igrshide">
+                                    <div class="form-group">
+                                        <label class="control-label" for="Name"><span class="text-danger">&nbsp;</span></label>
+                                        <button class="btn btn-success btn-lg m-4" type="button" onclick="fetchdata()"><i class="fa fa-search"></i> Search</button>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-6 igrshide">
+                                    <div class="form-group">
+                                        <label class="control-label" for="Name">Name<span class="text-danger">*</span></label>
+                                        <input type="text" placeholder="Name" value="" name="Name" id="Name" class="form-control" readonly>
+
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-6 igrshide">
+                                    <div class="form-group">
+                                        <label class="control-label" for="Email">Email</label>
+                                        <input type="email" placeholder="Email" required="" value="" name="Email" id="Email" class="form-control">
+
+                                    </div>
+                                </div>
+
+                                <div class="col-6 col-sm-6 igrshide">
+                                    <div class="form-group">
+                                        <label class="control-label" for="Mobile">Mobile<span class="text-danger">*</span></label>
+                                        <input type="text" placeholder="Mobile" maxlength="10" value="" name="Mobile" id="Mobile" class="form-control">
+
+                                    </div>
+                                </div>
+                            </div>
+                            if (CurrentUser == null)
+                            {
+                                <div class="row p-3 m-2" style="border:4px dashed #fff">
+                                    <div class="col-6 col-sm-6 igrshide">
+                                        <div class="form-group">
+                                            <label class="control-label" for="Mobile">Photo (Passport size) <span class="text-danger">*</span></label>
+                                            <input type="file" id="ProfilePic" name="ProfilePic" onchange="showprofile(this)" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-sm-6 igrshide">
+                                        <div class="form-group">
+                                            <img id="ProfileImg" height="150" width="150" src="~/upload-image-icon.png" style="border:1px solid #eee;background-color:#fff" />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            if (CurrentUser != null)
+                            {
+                                <div class="form-group igrshide">
+                                    <label class="control-label" for="HelpID">#HelpDesk Compaint ID(For Admin)</label>
+                                    <input type="text" placeholder="HelpDeskID" value="" name="HelpID" id="HelpID" class="form-control">
+
+                                </div>
+                            }
+
+
+                            <div class="form-group">
+                                <label class="control-label" for="Message">Message</label>
+                                @*  <textarea placeholder="Message" required="" value="" name="Message" id="Message" class="form-control"></textarea> *@
+                                <input id="Message" type="hidden" name="Message" required="" class="input-field">
+                                <trix-editor input="Message" placeholder=""></trix-editor>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+
+                                <div class="drop_box">
+
+
+                                    <input type="file" hidden accept=".pdf,.jpeg,.png,.jpg" id="fileID" style="display:none;">
+                                    <label for="attachment">
+                                        <a class="text-danger" role="button" aria-disabled="false">+ Add Documents (Upload Related Documents)</a>
+
+                                    </label>
+                                    <p>Files Supported: jpg, jpeg, pdf, png</p>
+                                </div>
+
+
+                                @*  <label for="attachment">
+                            <a class="text-danger" role="button" aria-disabled="false">+ Add Documents (Upload Related Documents)</a>
+
+                            </label> *@
+                                <input type="file" name="file[]" accept=".pdf,.jpeg,.png,.jpg" id="attachment" style="visibility: hidden; position: absolute;" multiple />
+                                <p id="files-area">
+                                    <span id="filesList">
+                                        <span id="files-names"></span>
+                                    </span>
+                                </p>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-6 col-sm-6 offset-sm-3">
+                                    <div class="captcha-box" style="text-align:center">
+                                        <canvas id="canvas" height=100 style='height:100px'></canvas>
+                                        <input name="code" autocomplete="off" class="form-control" placeholder="Captcha Code" id="captcha">
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <button class="btn btn-success btn-lg" type="button" onclick="NewSave()">Save</button>
+                                <a class="btn btn-danger text-white  btn-lg" href="/">Back</a>
+                            </div>
+
+                        }
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="ldrpge">
+    <img src="~/loader.svg" alt="" />
+</div>
+<script>
+    // step-1
+    const captcha = new Captcha($('#canvas'), {
+        length: 4
+    });
+    // api
+
+</script>
+<script>
+
+    document.getElementById("captcha").addEventListener("keydown", function (e) {
+        if (!e) { var e = window.event; }
+        //e.preventDefault(); // sometimes useful
+
+        // Enter is pressed
+        if (e.keyCode == 13) { NewSave(); }
+    }, false);
+
+    const dt = new DataTransfer(); // Permet de manipuler les fichiers de l'input file
+
+    $("#attachment").on('change', function (e) {
+        for (var i = 0; i < this.files.length; i++) {
+            let fileBloc = $('<span/>', { class: 'file-block' }),
+                fileName = $('<span/>', { class: 'name', text: this.files.item(i).name });
+            fileBloc.append('<span class="file-delete"><span>+</span></span>')
+                .append(fileName);
+
+            ///////////////////////////
+
+            var img = this.files.item(i).name;
+            var img_file_size = this.files.item(i).size;
+            const file = Math.round((img_file_size / 1024));
+                    // The size of the file.
+             if (file < 10240) {
+           // if (img_file_size < 2097152) {
+                var img_ext = img.split('.').pop().toLowerCase();
+                if ($.inArray(img_ext, ['jpg', 'jpeg', 'pdf', 'png']) === -1) {
+
+                    alert("File (" + img + ") type not allowed.");
+                }
+                else {
+                    $("#filesList > #files-names").append(fileBloc);
+                }
+            }
+            else {
+
+                alert("File(" + img + ") size is too big.(Max 10MB)");
+            }
+
+            /////////////////////////////
+
+
+        };
+        // Ajout des fichiers dans l'objet DataTransfer
+        for (let file of this.files) {
+            dt.items.add(file);
+        }
+        // Mise à jour des fichiers de l'input file après ajout
+        this.files = dt.files;
+
+        // EventListener pour le bouton de suppression créé
+        $('span.file-delete').click(function () {
+            let name = $(this).next('span.name').text();
+            // Supprimer l'affichage du nom de fichier
+            $(this).parent().remove();
+            for (let i = 0; i < dt.items.length; i++) {
+                // Correspondance du fichier et du nom
+                if (name === dt.items[i].getAsFile().name) {
+                    // Suppression du fichier dans l'objet DataTransfer
+                    dt.items.remove(i);
+                    continue;
+                }
+            }
+            // Mise à jour des fichiers de l'input file après suppression
+            document.getElementById('attachment').files = dt.files;
+        });
+    });
+
+    function  fetchdata(){
+
+        flag1=true;
+        if ($.trim($("#Enroll_Roll").val()) == "") {
+            $("#Enroll_Roll").addClass("input-validation-error");
+            flag1 = false;
+           $("#Name").val("");
+                         $("#Email").val("");
+                         $("#Mobile").val("");
+                         $("#Roll").val("");
+
+        }
+        else {
+          //  alert("sss")
+             $("#Enroll_Roll").removeClass("input-validation-error");
+               $(".ldrpge").show();
+            // alert($.trim($("#Enroll_Roll").val()))
+                 $.get("https://api.rmpssu.ac.in/api/Student/GetStudentData",
+                 {
+                     ENROLLMENT_NO: $.trim($("#Enroll_Roll").val()),
+                     PASSWORD: "admin@vrs#"
+                 },
+                     function(data, status){
+                           $(".ldrpge").hide();
+                     if(data.DATA!=null){
+
+                         $("#Name").val(data.DATA.STUDENT_NAME);
+                         $("#Email").val(data.DATA.EMAIL);
+                         $("#Mobile").val(data.DATA.MOBILE);
+                          $("#Roll").val(data.DATA.ROLL_NO);
+
+                     }
+                 else{
+                         $("#Name").val("");
+                         $("#Enroll_Roll").val("");
+                         $("#Email").val("");
+                         $("#Mobile").val("");
+                          $("#Roll").val("");
+                          Swal.fire("Data Not Found!");
+                     }
+                 });
+         }
+
+
+    }
+
+
+    function showprofile() {
+
+        var fuData = document.getElementById('ProfilePic');
+        var FileUploadPath = fuData.value;
+
+
+        if (FileUploadPath == '') {
+            alert("Please upload an image");
+
+        } else {
+            var Extension = FileUploadPath.substring(FileUploadPath.lastIndexOf('.') + 1).toLowerCase();
+            if (Extension == "gif" || Extension == "png" || Extension == "jpeg" || Extension == "jpg" || Extension == "PNG" || Extension == "JPEG" || Extension == "JPG") {
+                var reader = new FileReader();
+
+                if (typeof (fuData.files) != "undefined") {
+                    var size = parseFloat(fuData.files[0].size / 1024).toFixed(2);
+                    if (size > 5120) {
+                        alert("Image size should not more than 5mb. ");
+                        document.getElementById("ProfilePic").value = null;
+                    }
+                    else {
+                        reader.onload = function (e) {
+                            $('#ProfileImg').attr('src', e.target.result);
+                        }
+
+                        reader.readAsDataURL(fuData.files[0]);
+                    }
+                } else {
+                    alert("This browser does not support HTML5.");
+                }
+
+
+            }
+
+
+            else {
+                alert("Photo only allows file types of GIF, PNG, JPG and JPEG. ");
+            }
+        }
+    }
+</script>
+<style>
+    #files-area {
+        /* width: 30%; */
+        margin: 0 auto;
+    }
+
+    .file-block {
+        border-radius: 10px;
+        background-color: rgba(144, 163, 203, 0.2);
+        margin: 5px;
+        color: initial;
+        display: inline-flex;
+        padding-right: 10px;
+        width: max-content;
+        display: inline-flex;
+    }
+
+        .file-block > span.name {
+            padding-right: 10px;
+            width: max-content;
+            display: inline-flex;
+        }
+
+    .file-delete {
+        display: flex;
+        width: 24px;
+        color: initial;
+        background-color: #6eb4ff00;
+        font-size: large;
+        justify-content: center;
+        margin-right: 3px;
+        cursor: pointer;
+    }
+
+        .file-delete:hover {
+            background-color: rgba(144, 163, 203, 0.2);
+            border-radius: 10px;
+        }
+
+        .file-delete span {
+            transform: rotate(45deg);
+        }
+
+
+
+    .glow {
+        animation: example 2s linear infinite;
+    }
+
+    @@keyframes example {
+        from {
+            color: white;
+        }
+
+        to {
+            color: #ccc;
+        }
+    }
+
+    .newsline {
+        font-family: sans-serif;
+        /*  margin: 100px auto;*/
+        color: #228B22;
+        text-align: center;
+        position: relative;
+    }
+
+        .newsline:before {
+            content: "";
+            display: block;
+            width: 30px;
+            height: 5px;
+            background: white;
+            left: 0;
+            top: 50%;
+            position: absolute;
+        }
+
+        .newsline:after {
+            content: "";
+            display: block;
+            width: 30px;
+            height: 5px;
+            background: white;
+            right: 0;
+            top: 50%;
+            position: absolute;
+        }
+
+    .select2-container .select2-selection--single {
+        height: 40px;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 40px;
+    }
+</style>
+
+<script>
+    function validEmail(email) {
+        const re = /^(([^<>()[\]\\.,;:\s@@"]+(\.[^<>()[\]\\.,;:\s@@"]+)*)|(".+"))@@((\[[0-9]{1, 3}\.[0-9]{1, 3}\.[0-9]{1, 3}\.[0-9]{1, 3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
+    function validEnroll(Enroll) {
+        const re = /^([a-zA-Z0-9,:\S/-]*)$/;
+        return re.test(String(Enroll).toLowerCase());
+    }
+
+
+    function NewSave() {
+        flag = true;
+
+
+
+        if ($('#CTypeID option:selected').text() != 'IGRS') {
+            if ($.trim($("#Subject").val()) == "") {
+                $("#Subject").addClass("input-validation-error");
+                flag = false;
+            }
+            else {
+                $("#Subject").removeClass("input-validation-error");
+            }
+        } 
+         if ($('#CTypeID option:selected').text() != 'IGRS') {
+                if ($.trim($("#Roll").val()) == "") {
+                    $("#Enroll_Roll").addClass("input-validation-error");
+                    flag = false;
+                }
+                else {
+                    $("#Enroll_Roll").removeClass("input-validation-error");
+                }
+         }
+        else{
+            if ($.trim($("#Enroll_Roll").val()) == "") {
+                    $("#Enroll_Roll").addClass("input-validation-error");
+                    flag = false;
+                }
+                else {
+                    $("#Enroll_Roll").removeClass("input-validation-error");
+                }
+        
+        }
+        // if ($.trim($("#Enroll_Roll").val()) != "") {
+        //     var enroll = $.trim($("#Enroll_Roll").val());
+
+        //     if (!validEnroll(enroll)) {
+        //         alert("d")
+        //         $("#Enroll_Roll").addClass("input-validation-error");
+        //         flag = false;
+        //     }
+        //     else {
+        //         $("#Enroll_Roll").removeClass("input-validation-error");
+        //     }
+        // }
+        if ($.trim($("#CTypeID").val()) == "") {
+                $("#CTypeID").addClass("input-validation-error");
+                flag = false;
+            }
+            else {
+                $("#CTypeID").removeClass("input-validation-error");
+            }
+
+        if ($('#CTypeID option:selected').text() != 'IGRS') {
+            if ($.trim($("#Name").val()) == "") {
+                $("#Name").addClass("input-validation-error");
+                flag = false;
+            }
+            else {
+                $("#Name").removeClass("input-validation-error");
+            }
+
+
+            
+
+            if ($.trim($("#Email").val()) != "") {
+                var email = $.trim($("#Email").val());
+                if (!validEmail(email)) {
+                    $("#Email").addClass("input-validation-error");
+                    flag = false;
+                }
+                else {
+                    $("#Email").removeClass("input-validation-error");
+                }
+            }
+            if ($.trim($("#Mobile").val()) == "") {
+                $("#Mobile").addClass("input-validation-error");
+
+                 if(@admin==0)
+                {
+                    flag = false;
+                }else{
+                   
+                $("#Mobile").removeClass("input-validation-error");
+                }
+            }
+            else {
+                var number = $.trim($("#Mobile").val());
+                if (number.match(/^[6-9][0-9]{9}$/)) {
+                    $("#Mobile").removeClass("input-validation-error");
+                }
+                else {
+                    flag = false;
+                    if (!$("#Mobile").hasClass("input-validation-error"))
+                        $("#Mobile").addClass("input-validation-error");
+                }
+            }
+        }
+        if ($('#CTypeID option:selected').text() == 'Computerized/Duplicate Marksheet') {
+            if ($.trim($("#ApplicationNo").val()) == "") {
+                $("#ApplicationNo").addClass("input-validation-error");
+                flag = false;
+            }
+            else {
+                $("#ApplicationNo").removeClass("input-validation-error");
+            }
+        }
+
+        if ($('#ProfilePic').length) {
+            var fuData = document.getElementById('ProfilePic');
+
+            var FileUploadPath = fuData.value;
+            if (FileUploadPath == '') {
+                $("#ProfilePic").addClass("input-validation-error");
+                flag = false;
+            } else {
+                $("#ProfilePic").removeClass("input-validation-error");
+            }
+        }
+
+        if (flag){
+         var ele = document.getElementById('attachment');
+            var result = ele.files;
+                 if (JSON.stringify(result).length<3){
+                  alert("Please Upload Related Documents!");
+                  flag = false;
+                 }
+          }
+
+
+        const ans = captcha.valid($('input[name="code"]').val());
+        if (ans == false) {
+            flag = false;
+            $("#captcha").addClass("input-validation-error");
+        } else {
+            $("#captcha").removeClass("input-validation-error");
+        }
+
+
+        if (flag) {
+            // --------------------------------
+
+            var obj = {
+                CTypeID: $("#CTypeID").val(),
+            };
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("CheckAlert", "Home", new { area = "" })',
+                data: JSON.stringify(obj),
+                dataType: "json",
+                beforeSend: function () {
+                    // setting a timeout
+                    // $('#btnserwait').show();
+                    // $('#btnser').hide();
+
+                },
+                success: function (resp) {
+
+                    if (resp.data == "yes") {
+                            Swal.fire({
+                                      html: resp.msg,
+                                      icon: "warning",
+                                      showCancelButton: true,
+                                      confirmButtonText: "Click to Proceed",
+                                    }).then((result) => {
+                                      /* Read more about isConfirmed, isDenied below */
+                                      if (result.isConfirmed) {
+                                       $("#help").submit();
+                                      }
+                                    });
+                    }
+                    else{
+                      $("#help").submit();
+                    }
+                },
+
+
+            });
+
+
+
+            //////////////////////////////
+          //  $("#help").submit();
+        }
+    }
+
+
+</script>
+<script>
+
+    $('#btnser').show();
+    $('#btnserwait').hide();
+
+    $(function () {
+        ChangeForIgrs();
+    });
+
+    function SearchTicket() {
+        flag = true;
+
+        if ($.trim($("#Ticket").val()) == "") {
+            $("#Ticket").addClass("input-validation-error");
+            flag = false;
+        }
+        else {
+            $("#Ticket").removeClass("input-validation-error");
+        }
+        if (flag) {
+            var obj = {
+                TicketID: $("#Ticket").val(),
+            };
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("CheckTicket", "Home", new { area = "" })',
+                data: JSON.stringify(obj),
+                dataType: "json",
+                beforeSend: function () {
+                    // setting a timeout
+                    $('#btnserwait').show();
+                    $('#btnser').hide();
+
+                },
+                success: function (resp) {
+                    $('#Ticket').val("");
+                    // alert(resp.data)
+                    if (resp.data == "success") {
+                        //  alert("/Home/Tickets/?Ticket=" + resp.res)
+                        window.location.href = "/Home/Tickets/?Ticket=" + resp.res;
+
+                    }
+                    else {
+                        Swal.fire(resp.data)
+
+                    }
+                },
+                error: function (result) {
+                    alert('Service call failed: ' + result.status + ' Type :' + result.statusText);
+                },
+                complete: function () {
+                    setTimeout(function () {
+                        $('#btnserwait').hide();
+                        $('#btnser').show();
+
+                    }, 0);
+                },
+            });
+
+        };
+    }
+
+    function ChangeForIgrs() {
+
+        if ($('#CTypeID option:selected').text() == 'IGRS') {
+            $('#enroligrs').html("IGRS No.");
+            $('#Enroll_Roll').attr("placeholder", "IGRS No.");
+            $('.igrshide').hide();
+            $('.duplhide').hide();
+        }
+
+        // else if ($('#CTypeID option:selected').text() == 'TN-No') {
+        //     $('#enroligrs').html("TN-No");
+        //     $('#Enroll_Roll').attr("placeholder", "TN-No.");
+        //     $('.igrshide').hide();
+        //     $('.duplhide').hide();
+
+        // }
+        else if ($('#CTypeID option:selected').text() == 'Computerized/Duplicate Marksheet') {
+
+            $('.duplhide').show();
+
+
+        }
+        else {
+            $('#enroligrs').html("Roll/Enrollment");
+              $('#Enroll_Roll').attr("placeholder", "Roll/Enrollment");
+            $('.igrshide').show();
+            $('.duplhide').hide();
+        }
+
+    }
+</script>

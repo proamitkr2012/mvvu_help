@@ -1,0 +1,160 @@
+﻿@model List<MVVU_Model.DTO.HelpDesk.TblHelpDesk_AM>
+@{
+    ViewData["Title"] = "New";
+}
+
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                @* <div class="col-sm-6">
+                <h1 class="card-title">Choose Collage </h1>
+                </div>*@<!-- /.col -->
+
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <div class="content-body">
+        <!-- row -->
+        <div class="container-fluid">
+
+            <div class="row">
+
+                <div class="col-xl-12">
+
+                    @*//////////////////////*@
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">OnHold Tickets</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered table-striped ">
+                                <thead class="table-info">
+                                    <tr>
+
+                                        <th>SrNo.</th>
+                                        <th>TicketNo</th>
+                                        <th>Subject</th>
+                                        <th>Email</th>
+                                        <th>Name</th>
+                                        @* <th>Mobile</th> *@
+                                        <th>Enroll/Roll</th>
+                                        <th>ComplaintType</th>
+                                        <th width="100px">Date</th>
+
+
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @if (Model != null)
+                                    {
+                                        if (Model.Count() > 0)
+                                        {
+                                            int i = 1;
+                                            foreach (var item in Model)
+                                            {
+                                                var c = "";
+                                                if (item.FlagTypeName == "High")
+                                                {
+                                                    c = item.Color;
+
+                                                }
+                                                <tr style="color:@c">
+                                                    <td class="text-center">
+                                                        @i
+                                                        <a asp-action="Tickets" asp-area="Admin" asp-controller="Dashboard" asp-route-Ticket="@item.TicketID" class="btn btn-danger btn-sm w-100">View </a>
+                                                    </td>
+                                                    <td>
+                                                        <strong>
+
+                                                            @item.TicketID
+                                                        </strong>
+
+
+                                                    </td>
+                                                    <td>@item.Subject</td>
+                                                    <td>@item.Email</td>
+                                                    <td>@item.Name</td>
+                                                    @* <td>@item.Mobile</td> *@
+                                                    <td>@item.Enroll_Roll</td>
+                                                    <td>@item.TypeName</td>
+                                                    <td>@item.CreatedDate.Value.ToString("dd-MMM-yyyy HH:mm:ss tt")</td>
+
+
+                                                </tr>
+                                                i++;
+                                            }
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td>
+                                                <p>
+                                                    Data Not Found!
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    }
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+                @*////////////////////*@
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function ChangeStatusCountForm(pid) {
+        // alert(pid)
+        if (confirm("Click OK to proceed")) {
+            if (pid > 0) {
+                var obj = {
+                    EntryID: pid,
+                };
+                //alert(JSON.stringify(obj))
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '@Url.Action("VerifiedStatus", "Dashboard", new { Area = "admin" })',
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+
+                    success: function (response) {
+                        // alert(response)
+                        if (response == 1) {
+                            alert("Save Successfully!")
+                        } else if (response == 0) {
+
+                            alert("Please fill  details!")
+
+                        }
+                        else {
+                            alert("Error! Try Again Later ")
+                        }
+
+                        location.reload();
+
+                    },
+                    error: function (error) {
+
+                    }
+                });
+            }
+        } else {
+
+        }
+
+    }
+</script>

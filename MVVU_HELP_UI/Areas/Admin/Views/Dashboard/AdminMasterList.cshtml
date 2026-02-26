@@ -1,0 +1,142 @@
+﻿@model List<MVVU_Model.DTO.AdminMasterDTO>
+@{
+    ViewData["Title"] = "New";
+}
+
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                @* <div class="col-sm-6">
+                <h1 class="card-title">Choose Collage </h1>
+                </div>*@<!-- /.col -->
+
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <div class="content-body">
+        <!-- row -->
+        <div class="container-fluid">
+
+            <div class="row">
+
+                <div class="col-xl-12">
+
+                    @*//////////////////////*@
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Employee List</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered table-striped ">
+                                <thead class="table-info">
+                                    <tr>
+
+                                        <th>SrNo.</th>                                       
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Mobile</th>
+                                        <th>Roles</th>
+                                        <th>Working Area</th>
+                                        
+                                        <th>Action</th>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @if (Model != null)
+                                    {
+                                        if (Model.Count() > 0)
+                                        {
+                                            int i = 1;
+                                            foreach (var item in Model)
+                                            {
+                                                <tr>
+                                                    <td>@i</td>
+
+                                                    <td>@item.Name (@item.UserName)</td>
+                                                    <td>@item.Email</td>
+                                                    <td>@item.MobileNo</td>
+                                                    <td>@item.RolesList</td>
+                                                    <td>@item.WorkingArea</td>
+                                                  
+                                                    <td>
+                                                        <a asp-action="AdminEdit" asp-area="Admin" asp-controller="Dashboard" asp-route-AdminId="@item.AdminId" class="btn btn-danger btn-sm w-100">Edit </a>
+                                                    </td>
+                                                </tr>
+                                                i++;
+                                            }
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td>
+                                                <p>
+                                                    Data Not Found!
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    }
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+                @*////////////////////*@
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function ChangeStatusCountForm(pid) {
+        // alert(pid)
+        if (confirm("Click OK to proceed")) {
+            if (pid > 0) {
+                var obj = {
+                    EntryID: pid,
+                };
+                //alert(JSON.stringify(obj))
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '@Url.Action("VerifiedStatus", "Dashboard", new { Area = "admin" })',
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+
+                    success: function (response) {
+                        // alert(response)
+                        if (response == 1) {
+                            alert("Save Successfully!")
+                        } else if (response == 0) {
+
+                            alert("Please fill  details!")
+
+                        }
+                        else {
+                            alert("Error! Try Again Later ")
+                        }
+
+                        location.reload();
+
+                    },
+                    error: function (error) {
+
+                    }
+                });
+            }
+        } else {
+
+        }
+
+    }
+</script>

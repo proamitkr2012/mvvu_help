@@ -1,0 +1,284 @@
+﻿@model MVVU_Model.DTO.HelpDesk.DashboardCount
+<style>
+    table.vitamins {
+        margin: 20px 0 0 0;
+        border-collapse: collapse;
+        border-spacing: 0;
+        background: #212121;
+        color: #fff !important;
+        ;
+    }
+
+        table.vitamins th, table.vitamins td {
+            text-align: center;
+        }
+
+        table.vitamins thead {
+            line-height: 22px;
+            background: #2e63e7;
+            /* text-transform: uppercase; */
+        }
+
+            table.vitamins thead th {
+                color: #fff !important;
+                padding: 20px;
+                letter-spacing: 1px;
+                vertical-align: bottom;
+            }
+
+                table.vitamins thead th:nth-child(1) {
+                    width: 20%;
+                    text-align: left;
+                    padding-left: 20px;
+                }
+
+
+                table.vitamins thead th:nth-child(2) {
+                    width: 20%;
+                }
+
+                table.vitamins thead th:nth-child(3) {
+                    width: 20%;
+                }
+
+                table.vitamins thead th:nth-child(4) {
+                    width: 20%;
+                }
+
+        table.vitamins tbody {
+            font-size: 1em;
+            line-height: 15px;
+        }
+
+            table.vitamins tbody tr {
+                border-top: 2px solid rgba(109, 176, 231, 0.8) !important;
+                transition: background 0.6s, color 0.6s;
+            }
+
+                table.vitamins tbody tr:nth-child(even) {
+                    background: rgba(255, 255, 255, 0.2) !important;
+                }
+
+
+
+            table.vitamins tbody td {
+                padding: 18px;
+            }
+
+
+
+                table.vitamins tbody td:first-child {
+                    text-align: left;
+                    padding-left: 20px;
+                    font-weight: 700;
+                    background: rgba(109, 176, 231, 0.35);
+                    transition: backgrounf 0.6s;
+                }
+
+
+
+        table.vitamins tfoot td {
+            background: linear-gradient(109.6deg, rgb(36, 45, 57) 11.2%, rgb(16, 37, 60) 51.2%, rgb(0, 0, 0) 98.6%);
+            font-weight: 700;
+            font-size: 20px;
+            line-height: 55px;
+        }
+
+            table.vitamins tfoot td a {
+                color: red !important;
+            }
+
+</style>
+@if (Model != null)
+{
+
+
+   if (Model.DashBoardList.Count > 0)
+    {
+        <div class="w-100 card p-4 rounded">
+            <table class="vitamins">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th >New</th>
+                        <th>Under Process</th>
+                        @* <th>On-Hold</th> *@
+                        <th>Closed</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var item in Model.DashBoardList)
+                    {
+                      
+                        <tr>
+                            <td>@item.TypeName</td>
+                            <td>
+                                <a href="/admin/dashboard/NewTickectList/@item.CTypeID" class="notification">
+                                    <span class=" badgepadd">@item.PendingCount</span>
+
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/admin/dashboard/OpenTickectList/@item.CTypeID" class="notification">
+                                    <span class=" badgepadd" style="color:orange !important">@item.OpenCount</span>
+
+                                </a>
+                            </td>
+                            @* <td>
+                                <a href="/admin/dashboard/HoldTickectList/@item.CTypeID" class="notification">
+                                    <span class="badgepadd">@item.HoldCount</span>
+
+                                </a>
+                            </td> *@
+                            <td>
+                                <a href="/admin/dashboard/ClosedTickectList/@item.CTypeID" class="notification">
+                                    <span class="badgepadd">@item.ClosedCount</span>
+
+                                </a>
+                            </td>
+
+
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>
+                            Total
+                        </td>
+                        <td>
+                            <a href="/admin/dashboard/NewTickectList/99" class="notification">
+                                <span class="badgepaddwhite">
+                                    @Model.DashBoardList.Select(x => x.PendingCount).Sum()
+                                </span>
+
+                            </a>
+                        </td>
+                        <td>
+                            <a href="/admin/dashboard/OpenTickectList/99" class="notification">
+                                <span class="badgepaddwhite">@Model.DashBoardList.Select(x => x.OpenCount).Sum()</span>
+
+                            </a>
+                        </td>
+                       @*  <td>
+                            <a href="/admin/dashboard/HoldTickectList/99" class="notification">
+                                <span class="badgepaddwhite">@Model.DashBoardList.Select(x => x.HoldCount).Sum()</span>
+
+                            </a>
+                        </td> *@
+                        <td>
+                            <a href="/admin/dashboard/ClosedTickectList/99" class="notification">
+                                <span class="badgepaddwhite">@Model.DashBoardList.Select(x => x.ClosedCount).Sum()</span>
+
+                            </a>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+
+        </div>
+    } 
+
+    @* if (Model.DashBoardList.Count > 0)
+    {
+        <div class="w-100 card p-4 rounded">
+            @foreach (var item in Model.DashBoardList)
+            {
+               
+                <div class="container">
+                    <div class="row bg-secondary" style="margin: 2px;padding:5px;border-radius: 2rem">
+                        <div class="col-6 col-sm-4" style="    padding: 5px;
+    font-weight: 700;">
+                            @item.TypeName
+                        </div>
+                        <div class="col-6 col-sm-2">
+                            <a href="/admin/dashboard/NewTickectList/@item.CTypeID" class="notification">
+                                <span class="badge-danger badgepadd">@item.PendingCount</span> <span>Pending</span>
+
+                            </a>
+                        </div>
+                        <div class="col-6 col-sm-2">
+                            <a href="/admin/dashboard/OpenTickectList/@item.CTypeID" class="notification">
+                                <span class="badge-success badgepadd">@item.OpenCount</span>  <span>Opened</span>
+
+                            </a>
+                        </div>
+                        <div class="col-6 col-sm-2">
+                            <a href="/admin/dashboard/HoldTickectList/@item.CTypeID" class="notification">
+                                <span class="badge-warning badgepadd">@item.HoldCount</span>  <span>On Hold</span>
+
+                            </a>
+                        </div>
+                        <div class="col-6 col-sm-2">
+                            <a href="/admin/dashboard/ClosedTickectList/@item.CTypeID" class="notification">
+                                <span class="badge-grey badgepadd">@item.ClosedCount</span>   <span>Closed</span>
+
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+
+          
+
+            }
+            <div class="container">
+                <div class="row bg-danger" style="margin: 2px;padding:5px;">
+                    <div class="col-6 col-sm-4" style="    padding: 5px;
+    font-weight: 700;">
+                        Total
+                    </div>
+                    <div class="col-6 col-sm-2">
+                        <a href="/admin/dashboard/NewTickectList/99" class="notification">
+                            <span class="badge-warning badgepadd">
+                                @Model.DashBoardList.Select(x => x.PendingCount).Sum()
+                            </span> <span>Pending</span>
+
+                        </a>
+                    </div>
+                    <div class="col-6 col-sm-2">
+                        <a href="/admin/dashboard/OpenTickectList/99" class="notification">
+                            <span class="badge-warning badgepadd">@Model.DashBoardList.Select(x => x.OpenCount).Sum()</span>  <span>Opened</span>
+
+                        </a>
+                    </div>
+                    <div class="col-6 col-sm-2">
+                        <a href="/admin/dashboard/HoldTickectList/99" class="notification">
+                            <span class="badge-warning badgepadd">@Model.DashBoardList.Select(x => x.HoldCount).Sum()</span>  <span>On Hold</span>
+
+                        </a>
+                    </div>
+                    <div class="col-6 col-sm-2">
+                        <a href="/admin/dashboard/ClosedTickectList/99" class="notification">
+                            <span class="badge-warning badgepadd">@Model.DashBoardList.Select(x => x.ClosedCount).Sum()</span>   <span>Closed</span>
+
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    } *@
+}
+<script>
+
+
+
+    // Function to refresh the page with a specific URL
+    function refreshPage() {
+        // Replace the URL with your desired destination
+        var divpdis = '@MVVU_Model.WebConfigSetting.BaseURL' + "/Admin/Dashboard/CountIndex";
+        $("#pagecount").load(divpdis, function () { });
+    }
+    function updateCounter(seconds) {
+        $('#counter').text(seconds);
+    }
+    var counterValue = 30;
+
+    // Update the counter initially
+    updateCounter(counterValue);
+    // Initial counter value (in seconds)
+
+
+</script>

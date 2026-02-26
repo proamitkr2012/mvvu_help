@@ -1,0 +1,355 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<link rel="stylesheet" type="text/css" href="~/trix/trix.css">
+<script type="text/javascript" src="~/trix/trix.js"></script>
+
+<style>
+    .fontgap {
+        letter-spacing: 1px;
+    }
+
+    .btn-lg {
+        font-size: 1rem;
+    }
+
+    @@media (max-width: 990px) {
+
+        .fontgap .btn {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+    }
+
+    input[type=radio] {
+        border: 0px;
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .bg {
+        /* The image used */
+        background-image: url("/dbru.jpeg");
+        /* Full height */
+        width: 100%;
+        /* Center and scale the image nicely */
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    canvas {
+        height: 50px !important;
+    }
+
+    .form-group {
+        margin-bottom: 2px;
+    }
+
+    trix-editor {
+        background-color: white;
+    }
+
+    .trix-button-group--history-tools,
+    .trix-button--icon-undo,
+    .trix-button--icon-redo {
+        display: none;
+        border: none;
+    }
+
+    .trix-button-group.trix-button-group--file-tools {
+        display: none;
+        border: none;
+    }
+
+</style>
+<div class="">
+    <div class="col-md-12 alert-danger">
+        <marquee behavior="scroll" scrollamount="3" onmouseover="this.stop();" onmouseout="this.start();">
+            @* Admission form submission last date is 30 NOVEMBER, 2021 (प्रवेश फॉर्म जमा करने की अंतिम तिथि 30 नवम्बर 2021)*@
+        </marquee>
+    </div>
+    @*<div class="clearfix">&nbsp;</div>*@
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+<script src="~/js/jquery-captcha.js"></script>
+<div class="bg">
+    <div class="container ">
+        <div class="row p-2">
+            <div class="col-md-6 offset-md-3" style="min-height:450px">
+                <div class="card">
+                    <div class="card-header  bg-success text-white text-center newsline">
+                        <strong class="glow" style="font-size:20px">Message</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+
+                            <form class="p-4" method="post">
+                                <div class="form-group text-center " style="font-size:20px">
+                                    Ticket.no:- <b id="textToCopy" class="text-danger f-2x">@ViewBag.ticket</b> <br />(Please maintain this ticket no. for updated status)
+                                </div>  <div class="text-center mt-4">
+                                    <button class="btn btn-success" type="button" onclick="copyText()">Copy</button>
+                                    <a class="btn btn-warning" href="/">Back</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<script>
+    const dt = new DataTransfer(); // Permet de manipuler les fichiers de l'input file
+
+    $("#attachment").on('change', function (e) {
+        for (var i = 0; i < this.files.length; i++) {
+            let fileBloc = $('<span/>', { class: 'file-block' }),
+                fileName = $('<span/>', { class: 'name', text: this.files.item(i).name });
+            fileBloc.append('<span class="file-delete"><span>+</span></span>')
+                .append(fileName);
+            $("#filesList > #files-names").append(fileBloc);
+        };
+        // Ajout des fichiers dans l'objet DataTransfer
+        for (let file of this.files) {
+            dt.items.add(file);
+        }
+        // Mise à jour des fichiers de l'input file après ajout
+        this.files = dt.files;
+
+        // EventListener pour le bouton de suppression créé
+        $('span.file-delete').click(function () {
+            let name = $(this).next('span.name').text();
+            // Supprimer l'affichage du nom de fichier
+            $(this).parent().remove();
+            for (let i = 0; i < dt.items.length; i++) {
+                // Correspondance du fichier et du nom
+                if (name === dt.items[i].getAsFile().name) {
+                    // Suppression du fichier dans l'objet DataTransfer
+                    dt.items.remove(i);
+                    continue;
+                }
+            }
+            // Mise à jour des fichiers de l'input file après suppression
+            document.getElementById('attachment').files = dt.files;
+        });
+    });
+
+</script>
+
+<script>
+    function copyText() {
+        // Select the text to copy
+        var textToCopy = document.getElementById("textToCopy");
+
+        // Create a range and select the text
+        var range = document.createRange();
+        range.selectNode(textToCopy);
+
+        // Add the selected text to the clipboard
+        window.getSelection().removeAllRanges(); // Clear previous selections
+        window.getSelection().addRange(range);
+        document.execCommand("copy");
+
+        // Deselect the text (optional)
+        window.getSelection().removeAllRanges();
+
+        // Alert or notify the user
+        alert("Ticket No copied to clipboard!");
+    }
+</script>
+<style>
+    #files-area {
+        /* width: 30%; */
+        margin: 0 auto;
+    }
+
+    .file-block {
+        border-radius: 10px;
+        background-color: rgba(144, 163, 203, 0.2);
+        margin: 5px;
+        color: initial;
+        display: inline-flex;
+        padding-right: 10px;
+        width: max-content;
+        display: inline-flex;
+    }
+
+        .file-block& > span.name {
+            padding-right: 10px;
+            width: max-content;
+            display: inline-flex;
+        }
+
+    .file-delete {
+        display: flex;
+        width: 24px;
+        color: initial;
+        background-color: #6eb4ff00;
+        font-size: large;
+        justify-content: center;
+        margin-right: 3px;
+        cursor: pointer;
+    }
+
+        .file-delete:hover {
+            background-color: rgba(144, 163, 203, 0.2);
+            border-radius: 10px;
+        }
+
+        .file-delete span {
+            transform: rotate(45deg);
+        }
+
+
+
+    .glow {
+        animation: example 2s linear infinite;
+    }
+
+    @@keyframes example {
+        from {
+            color: white;
+        }
+
+        to {
+            color: #ccc;
+        }
+    }
+
+    .newsline {
+        font-family: sans-serif;
+        /*  margin: 100px auto;*/
+        color: #228B22;
+        text-align: center;
+        position: relative;
+    }
+
+        .newsline:before {
+            content: "";
+            display: block;
+            width: 30px;
+            height: 5px;
+            background: white;
+            left: 0;
+            top: 50%;
+            position: absolute;
+        }
+
+        .newsline:after {
+            content: "";
+            display: block;
+            width: 30px;
+            height: 5px;
+            background: white;
+            right: 0;
+            top: 50%;
+            position: absolute;
+        }
+
+    .select2-container .select2-selection--single {
+        height: 40px;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 40px;
+    }
+</style>
+
+<script>
+    document.getElementById("captcha").addEventListener("keydown", function (e) {
+        if (!e) { var e = window.event; }
+        // e.preventDefault(); // sometimes useful
+
+        // Enter is pressed
+        if (e.keyCode == 13) { SubmitSearchForm(); }
+    }, false);
+
+    // step-1
+    const captcha = new Captcha($('#canvas'), {
+        length: 4
+    });
+
+    function filter() {
+        $("form").submit();
+    }
+
+    $('#btnlwait').hide();
+    $('#btnl').show();
+    function SubmitSearchForm() {
+        flag = true;
+
+        if ($.trim($("#Course").val()) == "") {
+
+            //$("#Course").addClass("input-validation-error");
+            $("#select2-Course-container").addClass("input-validation-error");
+            flag = false;
+        }
+        else {
+            $("#select2-Course-container").removeClass("input-validation-error");
+        }
+        if ($.trim($("#roll").val()) == "") {
+            $("#roll").addClass("input-validation-error");
+            flag = false;
+        }
+        else {
+            $("#roll").removeClass("input-validation-error");
+        }
+        if ($.trim($("#roll").val()) == "") {
+            $("#roll").addClass("input-validation-error");
+            flag = false;
+        }
+        else {
+            $("#roll").removeClass("input-validation-error");
+        }
+
+        if ($.trim($("#ExamTypeName").val()) == "") {
+
+            //$("#Course").addClass("input-validation-error");
+            $("#select2-ExamTypeName-container").addClass("input-validation-error");
+            flag = false;
+        }
+        else {
+            $("#select2-ExamTypeName-container").removeClass("input-validation-error");
+        }
+        if ($.trim($("#dob").val()) == "" || $.trim($("#dob").val()) == "Date of birth") {
+            $("#dob").addClass("input-validation-error");
+            flag = false;
+
+            if ($.trim($("#fname").val()) == "") {
+                $("#fname").addClass("input-validation-error");
+                flag = false;
+            }
+            else {
+                flag = true;
+                $("#dob").removeClass("input-validation-error");
+                $("#fname").removeClass("input-validation-error");
+            }
+        }
+        else {
+
+            $("#dob").removeClass("input-validation-error");
+
+
+        }
+
+
+        //const ans = captcha.valid($('input[name="code"]').val());
+        //if (ans == false) {
+        //    flag = false;
+        //    $("#captcha").addClass("input-validation-error");
+        //} else {
+        //    $("#captcha").removeClass("input-validation-error");
+        //}
+
+
+    }
+
+</script>

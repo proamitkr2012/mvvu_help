@@ -1,0 +1,220 @@
+﻿@model MVVU_Model.DTO.HelpDesk.DashboardCount
+@{
+    ViewData["Title"] = "Index";
+}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<style>
+/* 
+    .notification {
+        color: yellow !important;
+        text-decoration: none;
+        padding: 5px;
+        position: relative;
+        display: inline-block;
+        border-radius: 2px;
+    }
+
+
+        .notification .badgepadd {
+            padding: 5px 8px;
+            border-radius: 50%;
+            font-size: 17px;
+        }
+       
+ */
+
+        .notification .badgepadd {
+        color: #fff !important;
+       
+            font-weight:bold;
+    }
+
+    .notification .badgepaddwhite {
+        color: #ffc107 !important;
+        font-weight: bold;
+    }
+    
+</style>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <section class="content">
+                <div class="container-fluid">
+                   
+                    <div class="row">
+                        <div class="col-md-8 offset-md-2">
+                           
+                                <div class="input-group">
+                                    <input type="text" id="TicketBox1" name="TicketBox1" class="form-control form-control-lg" placeholder="Type your Ticket ID">
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-lg btn-default" onclick="SearchTicketAdminOther()">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                         
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="row mb-2">
+
+
+                @* <div class="">
+                    <div class="search">
+                        <input type="text" class="searchTerm" id="TicketBox1" name="TicketBox1" placeholder="Enter Ticket ID">
+                        <button type="button" class="searchButton" onclick="SearchTicketAdminOther()">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div> *@
+                <div style="text-align:right;display:block;width:100%">
+                    <span>Page will refresh automatically in <span id="counter">30</span> seconds.</span>
+
+                    <button id="stopButton" class="btn btn-danger">Stop Refresh</button>
+                </div>
+                
+
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <div class="content-body" id="countpage">
+      
+        <div class="container-fluid">
+            
+
+            <div class="row m-1" id="pagecount">
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById("TicketBox1").addEventListener("keydown", function (e) {
+        if (!e) { var e = window.event; }
+        // e.preventDefault(); // sometimes useful
+
+        // Enter is pressed
+        if (e.keyCode == 13) { SearchTicketAdminOther(); }
+    }, false);
+    function SearchTicketAdminOther() {
+        flag = true;
+
+        // if ($.trim($("#Ticket").val()) == "") {
+        //     $("#Ticket").addClass("input-validation-error");
+        //     flag = false;
+        // }
+        // else {
+        //     $("#Ticket").removeClass("input-validation-error");
+        // }
+        if (flag) {
+            var obj = {
+                TicketID: $("#TicketBox1").val(),
+            };
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("CheckTicket", "Home", new { area = "" })',
+                data: JSON.stringify(obj),
+                dataType: "json",
+                beforeSend: function () {
+                    // setting a timeout
+                    $('#btnserwait').show();
+                    $('#btnser').hide();
+
+                },
+                success: function (resp) {
+                    $('#TicketBox1').val("");
+                    // alert(resp.data)
+                    if (resp.data == "success") {
+                        //  alert("/Home/Tickets/?Ticket=" + resp.res)
+                        window.location.href = "/Admin/Dashboard/Tickets/?Ticket=" + resp.res + "&&t=1";
+
+                    }
+                    else {
+                        Swal.fire(resp.data)
+
+                    }
+                },
+                error: function (result) {
+                    alert('Service call failed: ' + result.status + ' Type :' + result.statusText);
+                },
+                complete: function () {
+                    setTimeout(function () {
+                        $('#btnserwait').hide();
+                        $('#btnser').show();
+
+                    }, 0);
+                },
+            });
+
+        };
+    }
+
+    $(function () {
+        var divpdis = '@MVVU_Model.WebConfigSetting.BaseURL' + "/Admin/Dashboard/CountIndex";
+        $("#pagecount").load(divpdis, function () { });
+
+    });
+
+
+
+
+    //Set interval to update the counter every second
+    var counterInterval = setInterval(function () {
+        counterValue--;
+        updateCounter(counterValue);
+
+        // Refresh the page after 180 seconds
+        if (counterValue <= 0) {
+            refreshPage();
+        }
+    }, 1000);
+
+    // Stop button click event
+    $('#stopButton').on('click', function () {
+         clearInterval(counterInterval);
+        alert('Auto refresh stopped!');
+    });
+</script>
+<style>
+
+
+    .search {
+        width: 100%;
+        position: relative;
+        display: flex;
+    }
+
+    .searchTerm {
+        width: 100%;
+        border: 3px solid #00B4CC;
+        border-right: none;
+        padding: 3px;
+       
+        border-radius: 5px 0 0 5px;
+        outline: none;
+        color: #9DBFAF;
+    }
+
+        .searchTerm:focus {
+            color: #00B4CC;
+        }
+
+    .searchButton {
+        width: 40px;
+        height: 36px;
+        border: 1px solid #00B4CC;
+        background: #00B4CC;
+        text-align: center;
+        color: #fff;
+        border-radius: 0 5px 5px 0;
+        cursor: pointer;
+        font-size: 20px;
+    }
+
+    
+</style>         
