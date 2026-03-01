@@ -521,7 +521,6 @@
 
 <script>
 
-
     const dt = new DataTransfer();
 
     $("#attachment").on('change', function (e) {
@@ -534,7 +533,9 @@
 
             var img = this.files.item(i).name;
             var img_file_size = this.files.item(i).size;
-            if (img_file_size < 2097152) {
+           const file = Math.round((img_file_size / 1024));
+                    // The size of the file.
+             if (file < 5120) {
                 var img_ext = img.split('.').pop().toLowerCase();
                 if ($.inArray(img_ext, ['jpg', 'jpeg', 'pdf', 'png']) === -1) {
 
@@ -546,7 +547,7 @@
             }
             else {
 
-                alert("File(" + img + ") size is too big.(Max 2MB)");
+                alert("File(" + img + ") size is too big.(Max 5MB)");
             }
 
             /////////////////////////////
