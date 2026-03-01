@@ -395,19 +395,21 @@
              $("#Enroll_Roll").removeClass("input-validation-error");
                $(".ldrpge").show();
             // alert($.trim($("#Enroll_Roll").val()))
-                 $.get("https://api.rmpssu.ac.in/api/Student/GetStudentData",
+                 $.get("https://exams.mvvu.ac.in/api/MvvuApi/GetStudentData",
                  {
                      ENROLLMENT_NO: $.trim($("#Enroll_Roll").val()),
                      PASSWORD: "admin@vrs#"
                  },
                      function(data, status){
+                         
+                         
                            $(".ldrpge").hide();
-                     if(data.DATA!=null){
+                     if(data.name!=null){
 
-                         $("#Name").val(data.DATA.STUDENT_NAME);
-                         $("#Email").val(data.DATA.EMAIL);
-                         $("#Mobile").val(data.DATA.MOBILE);
-                          $("#Roll").val(data.DATA.ROLL_NO);
+                         $("#Name").val(data.name);
+                         $("#Email").val(data.email);
+                         $("#Mobile").val(data.mobile);
+                         $("#Roll").val(data.RollNo);
 
                      }
                  else{
